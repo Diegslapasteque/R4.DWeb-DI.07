@@ -16,19 +16,23 @@ class TestController extends AbstractController
        par défaut de Symfony. Le nom de la méthode importe peu.
     */
     #[Route('/', name: 'home')]
+
     
     
-    public function home()
+    
+    public function home(): Response
     {
-        return $this->render('user/notifications.html.twig', [
+        $userFirstName = "Mael";
+        
+        return $this->render('test.html.twig',[
             // this array defines the variables passed to the template,
             // where the key is the variable name and the value is the variable value
             // (Twig recommends using snake_case variable names: 'foo_bar' instead of 'fooBar')
-            'user_first_name' => $userFirstName,
-            'notifications' => $userNotifications,
+            'user_name' => $userFirstName,
+            
         ]);
-        
     }
+    
 
     #[Route('/me', name: 'mael')]
 
