@@ -3,6 +3,7 @@
 {% block title %}Lego Details{% endblock %}
 
 {% block body %}
+{% for lego in legos %}
 <div class="lego_card">
 
     <div class="info_section">
@@ -31,6 +32,7 @@
       <img src="/images/{{ lego.legoImage }}" alt="background lego card">
     </div>
 </div>
+{% endfor %}
 {% endblock %}
 
 
