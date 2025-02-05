@@ -5,6 +5,10 @@
 <body>
 <script>console.log("lefo")</script>
 
+{% for lego in legos %}
+        
+  
+
 <div class="lego_card">
       <div class="info_section">
         <div class="lego_header">
@@ -34,5 +38,6 @@
         <img src="/images/{{lego.legoImage}}" alt="background lego card">
       </div>
 </div>
+  {% endfor %}
 </body>
 </html>

@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Lego;
+
 use App\Service\LegoService;
 
 
@@ -46,13 +47,22 @@ use App\Service\LegoService;
     
 }*/
 
+
+
 class LegoController extends AbstractController
 {
+    
+
+
+
     #[Route('/lego', name: 'lego')]
+
+
+    
     public function home(LegoService $legoService): Response
     {
-        $lego= $legoService->getLego();
-        return $this->render('lego.html.twig', [ "lego" => $lego]);
+        $legos= $legoService->getLegos();
+        return $this->render('lego.html.twig', [ "legos" => $legos]);
     }
 
     

@@ -4,12 +4,39 @@
 namespace App\Service;
 
 use App\Entity\Lego;
+use PDO;
 
 class LegoService
 {
-    public function getLego(): Lego
-    {        
-        $lego = new Lego(
+    private $pdo;
+
+    public function __construct()
+    {
+        $this->pdo = new PDO('mysql:host=tp-symfony-mysql;dbname=lego_store', 'root', 'root');
+    }
+    
+    
+
+    public function getLego(int $id): Lego
+    {      
+        $donnees = $this->pdo->prepare('SELECT * FROM lego WHERE id = :id');
+        $donnees->bindParam(':id', $id);
+        $donnees->execute();
+        $obj = $donnees->fetch(PDO::FETCH_ASSOC);
+
+        $objdonnees = new Lego(
+            $obj['id'],
+            $obj['name'],
+            $obj['collection'],
+            $obj['description'],
+            $obj['price'],
+            $obj['pieces'],
+            $obj['imagebox'],
+            $obj['imagebg']
+        );
+        return $objdonnees;
+        
+       /* $lego = new Lego(
              10252,
             'La coccinelle Volkwagen',
              'Creator Expert',
@@ -22,10 +49,29 @@ class LegoService
 
         
 
-        return $lego;
-            
+        return $lego;*/
+    }
 
-        
-    
+    public function getLegos(): array
+    {
+        $donnees = $this->pdo->prepare('SELECT * FROM lego');
+        $donnees->execute();
+        $legos = [];
+
+        while ($obj = $donnees->fetch(PDO::FETCH_ASSOC)) {
+            $objdonnees = new Lego(
+                $obj['id'],
+                $obj['name'],
+                $obj['collection'],
+                $obj['description'],
+                $obj['price'],
+                $obj['pieces'],
+                $obj['imagebox'],
+                $obj['imagebg']
+            );
+            $legos[] = $objdonnees;
+        }
+
+        return $legos;
     }
 }
