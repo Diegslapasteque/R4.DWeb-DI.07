@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Lego;
+use App\Repository\LegoRepository;
 
 use App\Service\LegoService;
 
@@ -59,12 +60,44 @@ class LegoController extends AbstractController
 
 
     
-    public function home(LegoService $legoService): Response
+    public function home(LegoRepository $LegoRepository): Response
     {
-        $legos= $legoService->getLegos();
+        $legos= $LegoRepository->findAll();
         return $this->render('lego.html.twig', [ "legos" => $legos]);
     }
 
+   /* #[Route('/creator', name: 'creator')]
+    
+    public function creator(LegoService $legoService): Response
+    {
+        $legos= $legoService->getLegosByCollection('creator');
+        return $this->render('lego.html.twig', [ "legos" => $legos]);
+    }
+
+    #[Route('/star_wars', name: 'star_wars')]
+    
+    public function star_wars(LegoService $legoService): Response
+    {
+        $legos= $legoService->getLegosByCollection('star wars');
+        return $this->render('lego.html.twig', [ "legos" => $legos]);
+    }
+
+    #[Route('/creator_expert', name: 'creator_expert')]
+    
+    public function creator_expert(LegoService $legoService): Response
+    {
+        $legos= $legoService->getLegosByCollection('creator expert');
+        return $this->render('lego.html.twig', [ "legos" => $legos]);
+    }*/
+
+    #[Route('/{collection}', name: 'filter_by_collection', requirements: ['collection' => 'creator|star_wars|creator_expert'])]
+    public function filter(string $collection, LegoRepository $LegoRepository): Response
+    {
+        $collection = str_replace("_", " ", $collection);
+        $collection = ucwords($collection);
+        $legos = $LegoRepository->findCollection($collection);
+        return $this->render('lego.html.twig', ["legos" => $legos]);
+    }
     
 }
 

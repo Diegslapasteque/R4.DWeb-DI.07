@@ -54,7 +54,35 @@ class LegoService
 
     public function getLegos(): array
     {
+
+       
         $donnees = $this->pdo->prepare('SELECT * FROM lego');
+        $donnees->execute();
+        $legos = [];
+
+        while ($obj = $donnees->fetch(PDO::FETCH_ASSOC)) {
+            $objdonnees = new Lego(
+                $obj['id'],
+                $obj['name'],
+                $obj['collection'],
+                $obj['description'],
+                $obj['price'],
+                $obj['pieces'],
+                $obj['imagebox'],
+                $obj['imagebg']
+            );
+            $legos[] = $objdonnees;
+        }
+
+        return $legos;
+    }
+
+    public function getLegosByCollection($collection): array
+    {
+       
+            $donnees = $this->pdo->prepare('SELECT * FROM lego WHERE collection = :id');
+            $donnees->bindParam(':id', $collection);
+        
         $donnees->execute();
         $legos = [];
 
