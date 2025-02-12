@@ -6,21 +6,21 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Lego;
-use App\Service\LegoService;
 use App\Repository\LegoCollectionRepository;
+use App\Repository\LegoRepository;
 
 class LegoController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function home(LegoService $legoService): Response 
+    public function home(LegoRepository $legoService): Response 
     {
-        $legos = $legoService->getLegos();
+        $legos = $legoService->findAll();
         return $this->render('lego.html.twig', ['legos' => $legos]);
     }
 
         // Creator
         #[Route('/creator', name: 'creator')]
-        public function creator(LegoService $legoService): Response 
+        public function creator(LegoRepository $legoService): Response 
         {
             $legos = $legoService->getLegosByCollection('Creator');
             return $this->render('lego.html.twig', ['legos' => $legos]);
@@ -28,7 +28,7 @@ class LegoController extends AbstractController
 
         // Star Wars
         #[Route('/star_wars', name: 'star_wars')]
-        public function starWars(LegoService $legoService): Response 
+        public function starWars(LegoRepository $legoService): Response 
         {
             $legos = $legoService->getLegosByCollection('Star Wars');
             return $this->render('lego.html.twig', ['legos' => $legos]);
@@ -36,7 +36,7 @@ class LegoController extends AbstractController
 
         // Creator Expert
         #[Route('/creator_expert', name: 'creator_expert')]
-        public function creatorExpert(LegoService $legoService): Response 
+        public function creatorExpert(LegoRepository $legoService): Response 
         {
             $legos = $legoService->getLegosByCollection('Creator Expert');
             return $this->render('lego.html.twig', ['legos' => $legos]);
