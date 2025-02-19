@@ -2,6 +2,14 @@
 
 {% block title %}Lego Details{% endblock %}
 
+{# Marche pas affiche pas la nav #}
+{% block navigation %}
+      <a href="/">All</a> | 
+      {% for collection in collections %}
+        <a href="/collection/{{ collection.id }}">{{ collection.name }}</a> | 
+      {% endfor %}
+{% endblock %}
+
 {% block body %}
 {% for lego in legos %}
 <div class="lego_card">

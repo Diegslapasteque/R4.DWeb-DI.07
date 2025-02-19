@@ -6,6 +6,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Lego;
+use App\Entity\LegoCollection;
 use App\Repository\LegoCollectionRepository;
 use App\Repository\LegoRepository;
 
@@ -16,6 +17,25 @@ class LegoController extends AbstractController
     {
         $legos = $legoService->findAll();
         return $this->render('lego.html.twig', ['legos' => $legos]);
+    }
+
+    // Code rajouter pour l'ex 6 TP5
+    public function __construct(private LegoCollectionRepository $collectionRepository) {}
+
+    private function getAllCollections(): array
+    {
+        return $this->collectionRepository->findAll();
+    }
+    // 
+
+    #[Route('/collection/{id}', name: 'collection')]
+    public function collection(LegoCollection $collection): Response
+    {
+        $legos = $collection->getLegos();
+        return $this->render('lego.html.twig', [
+            'legos' => $legos,
+            'collections' => $this->getAllCollections()
+        ]);
     }
 
         // Creator
@@ -42,13 +62,12 @@ class LegoController extends AbstractController
             return $this->render('lego.html.twig', ['legos' => $legos]);
         }
 
-        // test
         #[Route('/test/{id}', 'test')]
-        public function test(int $id, LegoCollectionRepository $legoCollectionRepository): Response
+        public function test(LegoCollection $collection): Response
         {
-            $collection = $legoCollectionRepository->find($id);
             dd($collection);
         }
+    
     
 }
 ?>
