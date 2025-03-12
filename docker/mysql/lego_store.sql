@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : mysql
--- Généré le : mer. 19 fév. 2025 à 16:57
+-- Généré le : mer. 12 mars 2025 à 16:23
 -- Version du serveur : 8.4.4
 -- Version de PHP : 8.2.27
 
@@ -42,7 +42,8 @@ INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_
 ('DoctrineMigrations\\Version20250212160422', '2025-02-12 16:04:50', 44),
 ('DoctrineMigrations\\Version20250212162730', '2025-02-12 16:28:00', 18),
 ('DoctrineMigrations\\Version20250212163416', '2025-02-12 16:34:28', 18),
-('DoctrineMigrations\\Version20250212165315', '2025-02-12 16:53:19', 87);
+('DoctrineMigrations\\Version20250212165315', '2025-02-12 16:53:19', 87),
+('DoctrineMigrations\\Version20250312142049', '2025-03-12 14:21:10', 34);
 
 -- --------------------------------------------------------
 
@@ -93,7 +94,28 @@ CREATE TABLE `lego_collection` (
 INSERT INTO `lego_collection` (`id`, `name`) VALUES
 (1, 'Creator'),
 (2, 'Creator Expert'),
-(3, 'Star Wars');
+(3, 'Star Wars'),
+(4, 'Las');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `user`
+--
+
+CREATE TABLE `user` (
+  `id` int NOT NULL,
+  `username` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `roles` json NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `user`
+--
+
+INSERT INTO `user` (`id`, `username`, `roles`, `password`) VALUES
+(1, 'donzaudf@gmail.com', '[]', '$2y$13$7a1RNAc9FZm2b10r45tv/Ozl5trHMpmnoSa3peB48LmOiKih0pimy');
 
 --
 -- Index pour les tables déchargées
@@ -119,6 +141,13 @@ ALTER TABLE `lego_collection`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UNIQ_IDENTIFIER_USERNAME` (`username`);
+
+--
 -- AUTO_INCREMENT pour les tables déchargées
 --
 
@@ -132,7 +161,13 @@ ALTER TABLE `lego`
 -- AUTO_INCREMENT pour la table `lego_collection`
 --
 ALTER TABLE `lego_collection`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT pour la table `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Contraintes pour les tables déchargées
