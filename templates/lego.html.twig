@@ -2,15 +2,24 @@
 
 {% block title %}Lego Details{% endblock %}
 
-{# Marche pas affiche pas la nav #}
+{% block body %}
+
 {% block navigation %}
-      <a href="/">All</a> | 
-      {% for collection in collections %}
-        <a href="/collection/{{ collection.id }}">{{ collection.name }}</a> | 
-      {% endfor %}
+  <a href="/">All</a> | 
+  {% for collection in collections %}
+    <a href="/collection/{{ collection.id }}">{{ collection.name }}</a> | 
+  {% endfor %}
 {% endblock %}
 
-{% block body %}
+{% block button %}
+  {% if app.user %}
+    <p>Bonjour {{ app.user.username }} !</p>
+    <button class="logout_button"><a href="{{ path('app_logout') }}">Déconnexion</a></button>
+  {% else %}
+    <button class="login_button"><a href="{{ path('lego_store_login') }}">Connexion</a></button>
+  {% endif %}
+{% endblock %}
+
 {% for lego in legos %}
 <div class="lego_card">
 

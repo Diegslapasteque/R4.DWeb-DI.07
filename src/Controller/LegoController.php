@@ -9,65 +9,73 @@ use App\Entity\Lego;
 use App\Entity\LegoCollection;
 use App\Repository\LegoCollectionRepository;
 use App\Repository\LegoRepository;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\Event\LogoutEvent;
 
 class LegoController extends AbstractController
 {
-    #[Route('/', name: 'home')]
-    public function home(LegoRepository $legoService): Response 
+    private LegoCollectionRepository $collectionRepository;
+    private UrlGeneratorInterface $urlGenerator;
+
+    public function __construct(LegoCollectionRepository $collectionRepository, UrlGeneratorInterface $urlGenerator)
     {
-        $legos = $legoService->findAll();
-        return $this->render('lego.html.twig', ['legos' => $legos]);
+        $this->collectionRepository = $collectionRepository;
+        $this->urlGenerator = $urlGenerator;
     }
 
-    // Code rajouter pour l'ex 6 TP5
-    public function __construct(private LegoCollectionRepository $collectionRepository) {}
+    public static function getSubscribedEvents(): array
+    {
+        return [LogoutEvent::class => 'onLogout'];
+    }
+
+    public function onLogout(LogoutEvent $event): void
+    {
+        // get the security token of the session that is about to be logged out
+        $token = $event->getToken();
+
+        // get the current request
+        $request = $event->getRequest();
+
+        // get the current response, if it is already set by another listener
+        $response = $event->getResponse();
+
+        // configure a custom logout response to the homepage
+        $response = new RedirectResponse(
+            $this->urlGenerator->generate('homepage'),
+            RedirectResponse::HTTP_SEE_OTHER
+        );
+        $event->setResponse($response);
+    }
 
     private function getAllCollections(): array
     {
         return $this->collectionRepository->findAll();
     }
-    // 
+
+    #[Route('/', name: 'home')]
+    public function home(LegoRepository $legoService): Response 
+    {
+        $legos = $legoService->findAll();
+        $collections = $this->getAllCollections();
+        $loginPage = $this->urlGenerator->generate('lego_store_login', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->render('lego.html.twig', [
+            'login' => $loginPage,
+            'legos' => $legos,
+            'collections' => $collections
+        ]);
+    }
 
     #[Route('/collection/{id}', name: 'collection')]
     public function collection(LegoCollection $collection): Response
     {
         $legos = $collection->getLegos();
+        $collections = $this->getAllCollections();
         return $this->render('lego.html.twig', [
             'legos' => $legos,
-            'collections' => $this->getAllCollections()
+            'collections' => $collections,
+            'collection' => $collection
         ]);
     }
-
-        // Creator
-        #[Route('/creator', name: 'creator')]
-        public function creator(LegoRepository $legoService): Response 
-        {
-            $legos = $legoService->getLegosByCollection('Creator');
-            return $this->render('lego.html.twig', ['legos' => $legos]);
-        }
-
-        // Star Wars
-        #[Route('/star_wars', name: 'star_wars')]
-        public function starWars(LegoRepository $legoService): Response 
-        {
-            $legos = $legoService->getLegosByCollection('Star Wars');
-            return $this->render('lego.html.twig', ['legos' => $legos]);
-        }
-
-        // Creator Expert
-        #[Route('/creator_expert', name: 'creator_expert')]
-        public function creatorExpert(LegoRepository $legoService): Response 
-        {
-            $legos = $legoService->getLegosByCollection('Creator Expert');
-            return $this->render('lego.html.twig', ['legos' => $legos]);
-        }
-
-        #[Route('/test/{id}', 'test')]
-        public function test(LegoCollection $collection): Response
-        {
-            dd($collection);
-        }
-    
-    
 }
 ?>
